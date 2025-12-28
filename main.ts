@@ -78,7 +78,7 @@ export class TwitterAPIBrowser {
     this.browser = raceResult;
     console.log("Browser Created!!");
 
-    this.page = await this.browser.newPage();
+    this.page = await this.browser!.newPage();
     console.log("Page Created");
 
     await this.page.addInitScript(SETUP_SCRIPT);

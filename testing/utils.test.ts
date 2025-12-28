@@ -1,21 +1,22 @@
-import { expect, test } from "bun:test";
+import { test } from "node:test";
+import assert from "node:assert";
 import { pickFirstItem, removeNullRecursively } from "../utils.ts";
 
 test("expect pickFirstItem to return the first item", () => {
-  expect(pickFirstItem([1])).toBe(1);
+  assert.strictEqual(pickFirstItem([1]), 1);
 });
 
 test(
   "expect pickFirstItem to return an error if no items are provided",
   () => {
-    expect(pickFirstItem([]) instanceof Error).toBe(true);
+    assert.strictEqual(pickFirstItem([]) instanceof Error, true);
   }
 );
 
 test(
   "expect pickFirstItem to return an error if multiple items are provided",
   () => {
-    expect(pickFirstItem([1, 2]) instanceof Error).toBe(true);
+    assert.strictEqual(pickFirstItem([1, 2]) instanceof Error, true);
   }
 );
 
@@ -24,7 +25,7 @@ test(
   () => {
     const obj = { a: 1, b: null, c: "value" };
     const result = removeNullRecursively(obj);
-    expect(result).toEqual({ a: 1, c: "value" });
+    assert.deepStrictEqual(result, { a: 1, c: "value" });
   }
 );
 
@@ -44,7 +45,7 @@ test(
       },
     };
     const result = removeNullRecursively(obj);
-    expect(result).toEqual({
+    assert.deepStrictEqual(result, {
       a: 1,
       c: {
         d: "value",
@@ -59,7 +60,7 @@ test(
 test("expect removeNullRecursively to remove null from arrays", () => {
   const arr = [1, null, 3, null, 5];
   const result = removeNullRecursively(arr);
-  expect(result).toEqual([1, 3, 5]);
+  assert.deepStrictEqual(result, [1, 3, 5]);
 });
 
 test(
@@ -71,7 +72,7 @@ test(
       c: [{ d: "value", e: null }, null, { f: 2 }],
     };
     const result = removeNullRecursively(obj);
-    expect(result).toEqual({
+    assert.deepStrictEqual(result, {
       a: [1, 3],
       c: [{ d: "value" }, { f: 2 }],
     });
@@ -81,26 +82,26 @@ test(
 test(
   "expect removeNullRecursively to return primitive values as-is",
   () => {
-    expect(removeNullRecursively(42)).toBe(42);
-    expect(removeNullRecursively("string")).toBe("string");
-    expect(removeNullRecursively(true)).toBe(true);
-    expect(removeNullRecursively(false)).toBe(false);
+    assert.strictEqual(removeNullRecursively(42), 42);
+    assert.strictEqual(removeNullRecursively("string"), "string");
+    assert.strictEqual(removeNullRecursively(true), true);
+    assert.strictEqual(removeNullRecursively(false), false);
   }
 );
 
 test(
   "expect removeNullRecursively to return null and undefined as-is",
   () => {
-    expect(removeNullRecursively(null)).toBe(null);
-    expect(removeNullRecursively(undefined)).toBe(undefined);
+    assert.strictEqual(removeNullRecursively(null), null);
+    assert.strictEqual(removeNullRecursively(undefined), undefined);
   }
 );
 
 test(
   "expect removeNullRecursively to handle empty objects and arrays",
   () => {
-    expect(removeNullRecursively({})).toEqual({});
-    expect(removeNullRecursively([])).toEqual([]);
+    assert.deepStrictEqual(removeNullRecursively({}), {});
+    assert.deepStrictEqual(removeNullRecursively([]), []);
   }
 );
 
@@ -125,7 +126,7 @@ test(
       ],
     };
     const result = removeNullRecursively(obj);
-    expect(result).toEqual({
+    assert.deepStrictEqual(result, {
       variables: {
         a: 1,
       },

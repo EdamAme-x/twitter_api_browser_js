@@ -121,7 +121,11 @@ async function main(): Promise<void> {
   }
 }
 
-// Bun entry point
-if (import.meta.main) {
+// Node.js entry point
+import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
+
+if (import.meta.url === `file://${resolve(process.argv[1])}` || 
+    fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   await main();
 }
