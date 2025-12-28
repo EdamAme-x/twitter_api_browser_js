@@ -46,21 +46,46 @@ export class TwitterAPIBrowser {
    * @param waitForReady - The number of seconds to wait for the browser to be ready.
    */
   public async setup(waitForReady: number = 5): Promise<void> {
-    this.browser = await chromium.launchPersistentContext(this.userDataDir, {
-      headless: false,
-      viewport: null,
-      args: ["--disable-blink-features=AutomationControlled"],
-    });
+    const {
+      resolve,
+      reject,
+      promise: browserPromise,
+    } = Promise.withResolvers<BrowserContext>();
+
+    chromium
+      .launchPersistentContext(this.userDataDir, {
+        headless: false,
+        viewport: null,
+        args: [
+          "--disable-blink-features=AutomationControlled",
+          "--no-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+        ],
+      })
+      .then(resolve)
+      .catch(reject);
+
+    const raceResult = await Promise.race([
+      browserPromise,
+      sleep(waitForReady * 1000, new Error("Browser launch timed out")),
+    ]);
+
+    if (raceResult instanceof Error) {
+      throw raceResult;
+    }
+
+    this.browser = raceResult;
+    console.log("Browser Created!!");
 
     this.page = await this.browser.newPage();
+    console.log("Page Created");
 
     await this.page.addInitScript(SETUP_SCRIPT);
     await this.page.addInitScript(OPERATIONS_SCRIPT);
     await this.page.addInitScript(INITIAL_STATE_SCRIPT);
     await this.page.goto("https://x.com/home");
-    await this.page.waitForURL("https://x.com/home", {
-      timeout: 0,
-    });
+    console.log("Page Initialized");
     await sleep(waitForReady * 1000);
     this.operations = await this.page.evaluate(
       `globalThis.${OPERATIONS_GLOBAL_KEY}`
@@ -144,7 +169,9 @@ export class TwitterAPIBrowser {
     console.log("args", JSON.stringify(removeNullRecursively(args)));
     await sleep(500);
     const response = await this.page.evaluate(
-      `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(removeNullRecursively(args))})`
+      `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
+        removeNullRecursively(args)
+      )})`
     );
 
     console.log("response", response);

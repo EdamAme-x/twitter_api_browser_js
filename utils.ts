@@ -11,8 +11,8 @@ export const pickFirstItem = <T>(
   return values[0];
 };
 
-export const sleep = (ms: number): Promise<void> => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = <T>(ms: number, value: T = undefined as T): Promise<T> => {
+  return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 };
 
 type RemoveNullRecursively<T> = T extends null
@@ -51,4 +51,3 @@ export const removeNullRecursively = <T>(obj: T): RemoveNullRecursively<T> => {
 
   return obj as RemoveNullRecursively<T>;
 };
-
