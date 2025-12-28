@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { expect, test } from "bun:test";
 import * as injectScripts from "../inject.ts";
 
 const invalidScripts = [
@@ -15,18 +15,18 @@ const isValidSyntax = (script: string): boolean => {
   }
 };
 
-Deno.test("expect inject scripts to be valid syntax", () => {
+test("expect inject scripts to be valid syntax", () => {
   for (const [name, script] of Object.entries(injectScripts)) {
-    assertEquals(isValidSyntax(script), true);
+    expect(isValidSyntax(script)).toBe(true);
     console.log(`${name} is valid syntax`);
   }
 
   console.log("All scripts are valid syntax");
 });
 
-Deno.test("expect invalid scripts to be invalid syntax", () => {
+test("expect invalid scripts to be invalid syntax", () => {
   for (const script of invalidScripts) {
-    assertEquals(isValidSyntax(script), false);
+    expect(isValidSyntax(script)).toBe(false);
     console.log(`${script} is invalid syntax`);
   }
 

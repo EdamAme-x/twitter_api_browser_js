@@ -1,34 +1,34 @@
-import { assertEquals } from "@std/assert";
+import { expect, test } from "bun:test";
 import { pickFirstItem, removeNullRecursively } from "../utils.ts";
 
-Deno.test("expect pickFirstItem to return the first item", () => {
-  assertEquals(pickFirstItem([1]), 1);
+test("expect pickFirstItem to return the first item", () => {
+  expect(pickFirstItem([1])).toBe(1);
 });
 
-Deno.test(
+test(
   "expect pickFirstItem to return an error if no items are provided",
   () => {
-    assertEquals(pickFirstItem([]) instanceof Error, true);
+    expect(pickFirstItem([]) instanceof Error).toBe(true);
   }
 );
 
-Deno.test(
+test(
   "expect pickFirstItem to return an error if multiple items are provided",
   () => {
-    assertEquals(pickFirstItem([1, 2]) instanceof Error, true);
+    expect(pickFirstItem([1, 2]) instanceof Error).toBe(true);
   }
 );
 
-Deno.test(
+test(
   "expect removeNullRecursively to remove null properties from object",
   () => {
     const obj = { a: 1, b: null, c: "value" };
     const result = removeNullRecursively(obj);
-    assertEquals(result, { a: 1, c: "value" });
+    expect(result).toEqual({ a: 1, c: "value" });
   }
 );
 
-Deno.test(
+test(
   "expect removeNullRecursively to remove null from nested objects",
   () => {
     const obj = {
@@ -44,7 +44,7 @@ Deno.test(
       },
     };
     const result = removeNullRecursively(obj);
-    assertEquals(result, {
+    expect(result).toEqual({
       a: 1,
       c: {
         d: "value",
@@ -56,13 +56,13 @@ Deno.test(
   }
 );
 
-Deno.test("expect removeNullRecursively to remove null from arrays", () => {
+test("expect removeNullRecursively to remove null from arrays", () => {
   const arr = [1, null, 3, null, 5];
   const result = removeNullRecursively(arr);
-  assertEquals(result, [1, 3, 5]);
+  expect(result).toEqual([1, 3, 5]);
 });
 
-Deno.test(
+test(
   "expect removeNullRecursively to remove null from nested arrays",
   () => {
     const obj = {
@@ -71,40 +71,40 @@ Deno.test(
       c: [{ d: "value", e: null }, null, { f: 2 }],
     };
     const result = removeNullRecursively(obj);
-    assertEquals(result, {
+    expect(result).toEqual({
       a: [1, 3],
       c: [{ d: "value" }, { f: 2 }],
     });
   }
 );
 
-Deno.test(
+test(
   "expect removeNullRecursively to return primitive values as-is",
   () => {
-    assertEquals(removeNullRecursively(42), 42);
-    assertEquals(removeNullRecursively("string"), "string");
-    assertEquals(removeNullRecursively(true), true);
-    assertEquals(removeNullRecursively(false), false);
+    expect(removeNullRecursively(42)).toBe(42);
+    expect(removeNullRecursively("string")).toBe("string");
+    expect(removeNullRecursively(true)).toBe(true);
+    expect(removeNullRecursively(false)).toBe(false);
   }
 );
 
-Deno.test(
+test(
   "expect removeNullRecursively to return null and undefined as-is",
   () => {
-    assertEquals(removeNullRecursively(null), null);
-    assertEquals(removeNullRecursively(undefined), undefined);
+    expect(removeNullRecursively(null)).toBe(null);
+    expect(removeNullRecursively(undefined)).toBe(undefined);
   }
 );
 
-Deno.test(
+test(
   "expect removeNullRecursively to handle empty objects and arrays",
   () => {
-    assertEquals(removeNullRecursively({}), {});
-    assertEquals(removeNullRecursively([]), []);
+    expect(removeNullRecursively({})).toEqual({});
+    expect(removeNullRecursively([])).toEqual([]);
   }
 );
 
-Deno.test(
+test(
   "expect removeNullRecursively to handle complex nested structures",
   () => {
     const obj = {
@@ -125,7 +125,7 @@ Deno.test(
       ],
     };
     const result = removeNullRecursively(obj);
-    assertEquals(result, {
+    expect(result).toEqual({
       variables: {
         a: 1,
       },

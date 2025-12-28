@@ -1,4 +1,19 @@
 import { TwitterAPIBrowser } from "./main.ts";
+import { createInterface } from "node:readline";
+
+function prompt(question: string): Promise<string> {
+  const rl = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+}
 
 async function main(): Promise<void> {
   const userDataDir = "./.data";
@@ -15,7 +30,7 @@ async function main(): Promise<void> {
     
     while (true) {
       console.log("=".repeat(20));
-      const operation = prompt(
+      const operation = await prompt(
         "Choose operation [CreateTweet, HomeTimeline, UserByScreenName, CreateRetweet, FavoriteTweet, SearchTimeline, UsersByRestIds, exit]: "
       );
       
@@ -106,6 +121,7 @@ async function main(): Promise<void> {
   }
 }
 
+// Bun entry point
 if (import.meta.main) {
   await main();
 }
