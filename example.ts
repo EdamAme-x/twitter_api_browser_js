@@ -21,7 +21,7 @@ async function main(): Promise<void> {
   console.log("Creating browser...");
   const browser = new TwitterAPIBrowser(userDataDir);
   console.log("Browser created");
-  await browser.setup();
+  await browser.setup(10);
   
   try {
     console.log("Logging in...");
