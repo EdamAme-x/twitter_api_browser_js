@@ -188,15 +188,11 @@ export class TwitterAPIBrowser {
       )})`
     )].flat();
 
-    if (!(response instanceof Array)) {
-      console.log(`!!! Please report this error to the developer !!!`);
-      throw new Error(`Unexpected result from '${REQUEST_FUNC_GLOBAL_KEY}'`);
-    }
-
     // TODO: more strict type check
     const result = pickFirstItem(response, "response");
 
     if (result instanceof Error) {
+      console.log(`!!! Please report this error to the developer !!!`);
       throw result;
     }
 
