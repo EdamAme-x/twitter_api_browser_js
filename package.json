@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@evex/loose-types": "npm:@jsr/evex__loose-types@^1.0.1",
-    "playwright": "^1.57.0"
+    "playwright": "^1.57.0",
+    "twitter-openapi-typescript-generated": "^0.0.38"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

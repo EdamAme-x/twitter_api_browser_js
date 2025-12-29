@@ -20,6 +20,8 @@ import { type BrowserContext, chromium, type Page } from "playwright";
 import { pickFirstItem, removeNullRecursively, sleep } from "./utils.ts";
 import type { LooseType } from "@evex/loose-types";
 import type { InitialState, Operation } from "./inject.ts";
+import type { LooseErrorResponse, SuccessResponse, TwitterOpenAPIModelsMapping } from "./twitter-types.ts";
+
 
 /**
  * @classdesc Base class for operating Twitter API Browser
@@ -76,16 +78,13 @@ export class TwitterAPIBrowser {
     }
 
     this.browser = raceResult;
-    console.log("Browser Created!!");
 
     this.page = await this.browser!.newPage();
-    console.log("Page Created");
 
     await this.page.addInitScript(SETUP_SCRIPT);
     await this.page.addInitScript(OPERATIONS_SCRIPT);
     await this.page.addInitScript(INITIAL_STATE_SCRIPT);
     await this.page.goto("https://x.com/home");
-    console.log("Page Initialized");
     await sleep(waitForReady * 1000);
     this.operations = await this.page.evaluate(
       `globalThis.${OPERATIONS_GLOBAL_KEY}`
@@ -134,12 +133,11 @@ export class TwitterAPIBrowser {
    * @param body - The body of the request
    * @returns Response of the request
    */
-  public async graphql(
+  public async graphql<T extends string = string>(
     method: string,
     path: string,
     body: LooseType
-  // TODO: Add type for the response
-  ): Promise<LooseType> {
+  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
     if (!this.page) {
       throw new Error("Maybe you forgot to call setup()?");
     }
@@ -174,11 +172,9 @@ export class TwitterAPIBrowser {
       args["data"] = body;
     }
 
-    console.log("SETUP_SCRIPT");
 
     await this.page.evaluate(SETUP_SCRIPT);
 
-    console.log("args", JSON.stringify(removeNullRecursively(args)));
     await sleep(500);
     const response = await this.page.evaluate(
       `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
@@ -186,13 +182,12 @@ export class TwitterAPIBrowser {
       )})`
     );
 
-    console.log("response", response);
-
     if (!(response instanceof Object)) {
       throw new Error(`Unexpected result from '${REQUEST_FUNC_GLOBAL_KEY}'`);
     }
 
-    return response;
+    // TODO
+    return response as LooseType;
   }
 
   /**
@@ -202,11 +197,11 @@ export class TwitterAPIBrowser {
    * @param fieldToggles - The fields to toggle on or off in the operation
    * @returns Response of the request
    */
-  public async request(
-    operationName: string,
+  public async request<T extends keyof TwitterOpenAPIModelsMapping = string>(
+    operationName: T,
     variables: LooseType,
     fieldToggles: Record<string, boolean> = {}
-  ) {
+  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
     if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");
     }
