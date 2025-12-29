@@ -143,7 +143,7 @@ export class TwitterAPIBrowser {
     method: string,
     path: string,
     body: LooseType
-  ): Promise<(SuccessResponse<T> | LooseErrorResponse)[]> {
+  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
     if (!this.page) {
       throw new Error("Maybe you forgot to call setup()?");
     }
@@ -192,8 +192,14 @@ export class TwitterAPIBrowser {
       throw new Error(`Unexpected result from '${REQUEST_FUNC_GLOBAL_KEY}'`);
     }
 
-    // TODO
-    return response;
+    // TODO: more strict type check
+    const result = pickFirstItem(response, "response");
+
+    if (result instanceof Error) {
+      throw result;
+    }
+
+    return result;
   }
 
   /**
@@ -207,7 +213,7 @@ export class TwitterAPIBrowser {
     operationName: T,
     variables: LooseType,
     fieldToggles: Record<string, boolean> = {}
-  ): Promise<(SuccessResponse<T> | LooseErrorResponse)[]> {
+  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
     if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");
     }
