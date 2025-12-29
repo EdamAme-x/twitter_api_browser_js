@@ -51,7 +51,7 @@ async function main(): Promise<void> {
             disallowed_reply_options: null,
           },
         );
-        console.log(await res.json());
+        console.log(res);
       } else if (operation === "HomeTimeline") {
         res = await browser.request(
           "HomeTimeline",
@@ -62,7 +62,7 @@ async function main(): Promise<void> {
             withCommunity: true,
           },
         );
-        console.log(await res.json());
+        console.log(res);
       } else if (operation === "UserByScreenName") {
         res = await browser.request(
           "UserByScreenName",
@@ -76,7 +76,7 @@ async function main(): Promise<void> {
             withAuxiliaryUserLabels: true,
           },
         );
-        console.log(await res.json());
+        console.log(res);
       } else if (operation === "CreateRetweet") {
         res = await browser.request(
           "CreateRetweet",
@@ -85,13 +85,13 @@ async function main(): Promise<void> {
             dark_request: false,
           },
         );
-        console.log(await res.json());
+        console.log(res);
       } else if (operation === "FavoriteTweet") {
         res = await browser.request(
           "FavoriteTweet",
           { tweet_id: "1987547856664993831" },
         );
-        console.log(await res.json());
+        console.log(res);
       } else if (operation === "SearchTimeline") {
         res = await browser.request(
           "SearchTimeline",
@@ -103,7 +103,7 @@ async function main(): Promise<void> {
             withGrokTranslatedBio: false,
           },
         );
-        console.log(await res.json());
+        console.log(res);
       } else if (operation === "UsersByRestIds") {
         res = await browser.request(
           "UsersByRestIds",
@@ -111,7 +111,7 @@ async function main(): Promise<void> {
             userIds: ["900282258736545792"],
           },
         );
-        console.log(await res.json());
+        console.log(res);
       } else {
         console.log(`Unknown operation: ${operation}`);
       }
@@ -125,7 +125,7 @@ async function main(): Promise<void> {
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
-if (import.meta.url === `file://${resolve(process.argv[1])}` || 
-    fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+const isMainModule = fileURLToPath(import.meta.url) === resolve(process.argv[1]);
+if (isMainModule) {
   await main();
 }

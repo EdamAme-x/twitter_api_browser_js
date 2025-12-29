@@ -138,14 +138,15 @@ export class TwitterAPIBrowser {
     method: string,
     path: string,
     body: LooseType
-  ): Promise<Response> {
+  // TODO: Add type for the response
+  ): Promise<LooseType> {
     if (!this.page) {
       throw new Error("Maybe you forgot to call setup()?");
     }
 
     const args = {
       headers: {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
       },
       method,
       path,
@@ -157,7 +158,18 @@ export class TwitterAPIBrowser {
       const params = Object.fromEntries(
         Object.entries(body).map(([k, v]) => [k, JSON.stringify(v)])
       );
-      args["params"] = params;
+      args["params"] = {
+        queryId: body.queryId,
+        variables: JSON.stringify(body.variables),
+      };
+
+      if (body.features) {
+        args["params"]["features"] = JSON.stringify(body.features);
+      }
+
+      if (body.fieldToggle) {
+        args["params"]["fieldToggle"] = JSON.stringify(body.fieldToggle);
+      }
     } else if (method === "POST") {
       args["data"] = body;
     }
@@ -176,7 +188,7 @@ export class TwitterAPIBrowser {
 
     console.log("response", response);
 
-    if (!(response instanceof Response)) {
+    if (!(response instanceof Object)) {
       throw new Error(`Unexpected result from '${REQUEST_FUNC_GLOBAL_KEY}'`);
     }
 
@@ -195,7 +207,7 @@ export class TwitterAPIBrowser {
     variables: LooseType,
     fieldToggles: Record<string, boolean> = {}
   ) {
-    if (!this.page || !this.operations) {
+    if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");
     }
 
@@ -223,14 +235,14 @@ export class TwitterAPIBrowser {
     const method = METHOD_MAP[operationType];
 
     const featureSwitch = {
-      ...this.initialState?.featureSwitch?.defaultConfig,
-      ...this.initialState?.featureSwitch?.user,
-      ...this.initialState?.featureSwitch?.debug,
-      ...this.initialState?.featureSwitch?.customOverrides,
+      ...this.initialState.featureSwitch.defaultConfig,
+      ...this.initialState.featureSwitch.user,
+      ...this.initialState.featureSwitch.debug,
+      ...this.initialState.featureSwitch.customOverrides,
     };
 
     const featureSwitchesMap = Object.fromEntries(
-      Object.entries(featureSwitch).filter(([k]) => featureSwitches.includes(k))
+      Object.entries(featureSwitch).filter(([k]) => featureSwitches.includes(k)).map(([k, v]) => [k, v.value])
     );
 
     const body = {
@@ -240,11 +252,11 @@ export class TwitterAPIBrowser {
       fieldToggle: null as null | typeof fieldToggle,
     };
 
-    if (featureSwitchesMap) {
+    if (featureSwitchesMap && Object.keys(featureSwitchesMap).length > 0) {
       body.features = featureSwitchesMap;
     }
 
-    if (fieldToggle) {
+    if (fieldToggle && Object.keys(fieldToggle).length > 0) {
       body.fieldToggle = fieldToggle;
     }
 

@@ -85,7 +85,7 @@ export type Operation = {
 } & Record<string, LooseType>;
 
 type FeatureSwitchValue = {
-  value: LooseType;
+  value: boolean;
 } & Record<string, LooseType>;
 
 export type InitialState = {
