@@ -48,6 +48,10 @@ export class TwitterAPIBrowser {
    * @param waitForReady - The number of seconds to wait for the browser to be ready.
    */
   public async setup(waitForReady: number = 5): Promise<void> {
+    if (this.browser && this.page) {
+      await this.close();
+    }
+
     const {
       resolve,
       reject,
@@ -106,6 +110,8 @@ export class TwitterAPIBrowser {
     // NOTE: Patch memory leak
     this.browser = undefined;
     this.page = undefined;
+    this.operations = undefined;
+    this.initialState = undefined;
   }
 
   [Symbol.asyncDispose] = this.close;
@@ -137,7 +143,7 @@ export class TwitterAPIBrowser {
     method: string,
     path: string,
     body: LooseType
-  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
+  ): Promise<(SuccessResponse<T> | LooseErrorResponse)[]> {
     if (!this.page) {
       throw new Error("Maybe you forgot to call setup()?");
     }
@@ -182,12 +188,12 @@ export class TwitterAPIBrowser {
       )})`
     );
 
-    if (!(response instanceof Object)) {
+    if (!(response instanceof Array)) {
       throw new Error(`Unexpected result from '${REQUEST_FUNC_GLOBAL_KEY}'`);
     }
 
     // TODO
-    return response as LooseType;
+    return response;
   }
 
   /**
@@ -201,7 +207,7 @@ export class TwitterAPIBrowser {
     operationName: T,
     variables: LooseType,
     fieldToggles: Record<string, boolean> = {}
-  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
+  ): Promise<(SuccessResponse<T> | LooseErrorResponse)[]> {
     if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");
     }
