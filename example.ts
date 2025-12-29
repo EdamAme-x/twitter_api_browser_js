@@ -23,10 +23,15 @@ async function main(): Promise<void> {
   const userDataDir = "./.data";
 
   const browser = new TwitterAPIBrowser(userDataDir);
-  await browser.setup(10);
+  await browser.setup();
 
   try {
-    await browser.manualLogin();
+    if (await browser.isLoggedIn()) {
+      console.log("User is logged in");
+    }else {
+      console.log("User is not logged in, please login manually");
+      await browser.manualLogin();
+    }
 
     while (true) {
       console.log("=".repeat(20));

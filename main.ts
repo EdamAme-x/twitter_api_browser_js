@@ -46,8 +46,9 @@ export class TwitterAPIBrowser {
   /**
    * @description Launches a new browser context and page, and then injects scripts.
    * @param waitForReady - The number of seconds to wait for the browser to be ready.
+   * @param headless - Whether to run the browser in headless mode. (Recommended: false)
    */
-  public async setup(waitForReady: number = 5): Promise<void> {
+  public async setup(waitForReady: number = 5, headless: boolean = false): Promise<void> {
     if (this.browser && this.page) {
       await this.close();
     }
@@ -60,7 +61,7 @@ export class TwitterAPIBrowser {
 
     chromium
       .launchPersistentContext(this.userDataDir, {
-        headless: false,
+        headless: headless,
         viewport: null,
         args: [
           "--disable-blink-features=AutomationControlled",
@@ -115,6 +116,17 @@ export class TwitterAPIBrowser {
   }
 
   [Symbol.asyncDispose] = this.close;
+
+  /**
+   * @description Is user logged in?
+   */
+  public async isLoggedIn(): Promise<boolean> {
+    const cookies = await this.browser?.cookies("https://x.com");
+    if (!cookies) {
+      return false;
+    }
+    return cookies.some((cookie) => cookie.name === "auth_token");
+  }
 
   /**
    * @description Manually login to Twitter.
@@ -188,7 +200,6 @@ export class TwitterAPIBrowser {
       )})`
     )].flat();
 
-    // TODO: more strict type check
     const result = pickFirstItem(response, "response");
 
     if (result instanceof Error) {
@@ -196,6 +207,7 @@ export class TwitterAPIBrowser {
       throw result;
     }
 
+    // TODO: more strict type check
     return result;
   }
 
