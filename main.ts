@@ -182,13 +182,14 @@ export class TwitterAPIBrowser {
     await this.page.evaluate(SETUP_SCRIPT);
 
     await sleep(500);
-    const response = await this.page.evaluate(
+    const response = [await this.page.evaluate(
       `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
         removeNullRecursively(args)
       )})`
-    );
+    )].flat();
 
     if (!(response instanceof Array)) {
+      console.log(`!!! Please report this error to the developer !!!`);
       throw new Error(`Unexpected result from '${REQUEST_FUNC_GLOBAL_KEY}'`);
     }
 
@@ -234,7 +235,7 @@ export class TwitterAPIBrowser {
     const fieldToggle = {} as Record<string, boolean>;
 
     for (const [k, v] of Object.entries(fieldToggles)) {
-      if (allowFieldToggles.includes(k)) {
+      if (allowFieldToggles && allowFieldToggles.includes(k)) {
         fieldToggle[k] = v;
       }
     }
