@@ -2,9 +2,17 @@
   "name": "twitter-api-browser-js",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "test": "tsx --test testing/**/*.test.ts",
-    "example": "tsx example.ts"
+    "example": "tsx example.ts",
+    "build": "tsc",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@evex/loose-types": "npm:@jsr/evex__loose-types@^1.0.1",
@@ -18,5 +26,11 @@
   },
   "imports": {
     "@evex/loose-types": "jsr:@evex/loose-types@^1.0.1"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ]
 }
