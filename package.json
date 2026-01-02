@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@evex/loose-types": "npm:@jsr/evex__loose-types@^1.0.1",
-    "playwright": "^1.57.0",
+    "playwright": "npm:patchright@^1.57.0",
     "twitter-openapi-typescript-generated": "^0.0.38"
   },
   "devDependencies": {

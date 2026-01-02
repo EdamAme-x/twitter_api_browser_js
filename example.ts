@@ -23,6 +23,7 @@ async function main(): Promise<void> {
   const userDataDir = "./.data";
 
   const browser = new TwitterAPIBrowser(userDataDir);
+  console.log("Setup browser");
   await browser.setup();
 
   try {
