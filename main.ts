@@ -19,8 +19,12 @@ import {
 import { type BrowserContext, chromium, type Page } from "playwright";
 import { pickFirstItem, removeNullRecursively, sleep } from "./utils.js";
 import type { InitialState, Operation } from "./inject.ts";
-import type { LooseErrorResponse, LooseType, SuccessResponse, TwitterOpenAPIModelsMapping } from "./twitter-types.ts";
-
+import type {
+  LooseErrorResponse,
+  LooseType,
+  SuccessResponse,
+  TwitterOpenAPIModelsMapping,
+} from "./twitter-types.ts";
 
 /**
  * @classdesc Base class for operating Twitter API Browser
@@ -47,7 +51,10 @@ export class TwitterAPIBrowser {
    * @param waitForReady - The number of seconds to wait for the browser to be ready.
    * @param headless - Whether to run the browser in headless mode. (Recommended: false)
    */
-  public async setup(waitForReady: number = 5, headless: boolean = false): Promise<void> {
+  public async setup(
+    waitForReady: number = 5,
+    headless: boolean = false
+  ): Promise<void> {
     if (this.browser && this.page) {
       await this.close();
     }
@@ -189,15 +196,16 @@ export class TwitterAPIBrowser {
       args["data"] = body;
     }
 
-
     await this.page.evaluate(SETUP_SCRIPT);
 
     await sleep(500);
-    const response = [await this.page.evaluate(
-      `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
-        removeNullRecursively(args)
-      )})`
-    )].flat();
+    const response = [
+      await this.page.evaluate(
+        `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
+          removeNullRecursively(args)
+        )})`
+      ),
+    ].flat();
 
     const result = pickFirstItem(response, "response");
 
@@ -220,7 +228,8 @@ export class TwitterAPIBrowser {
   public async request<T extends keyof TwitterOpenAPIModelsMapping = string>(
     operationName: T,
     variables: LooseType,
-    fieldToggles: Record<string, boolean> = {}
+    fieldToggles: Record<string, boolean> = {},
+    features: Record<string, LooseType> = {}
   ): Promise<SuccessResponse<T> | LooseErrorResponse> {
     if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");
@@ -257,7 +266,9 @@ export class TwitterAPIBrowser {
     };
 
     const featureSwitchesMap = Object.fromEntries(
-      Object.entries(featureSwitch).filter(([k]) => featureSwitches.includes(k)).map(([k, v]) => [k, v.value])
+      Object.entries(featureSwitch)
+        .filter(([k]) => featureSwitches.includes(k))
+        .map(([k, v]) => [k, v.value])
     );
 
     const body = {
@@ -271,9 +282,22 @@ export class TwitterAPIBrowser {
       body.features = featureSwitchesMap;
     }
 
-    if (fieldToggle && Object.keys(fieldToggle).length > 0) {
+    if (features) {
+      body.features = features;
+    }
+
+    if (fieldToggle) {
       body.fieldToggle = fieldToggle;
     }
+
+    const otherProps = ["features", "fieldToggle"] as const;
+
+    otherProps.forEach((key: (typeof otherProps)[number]) => {
+      const o = body[key];
+      if (o && Object.keys(o).length === 0) {
+        delete body[key];
+      }
+    });
 
     return await this.graphql(
       method,
