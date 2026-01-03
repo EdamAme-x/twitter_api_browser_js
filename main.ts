@@ -278,7 +278,7 @@ export class TwitterAPIBrowser {
       fieldToggle: null as null | typeof fieldToggle,
     };
 
-    if (featureSwitchesMap && Object.keys(featureSwitchesMap).length > 0) {
+    if (featureSwitchesMap) {
       body.features = featureSwitchesMap;
     }
 
