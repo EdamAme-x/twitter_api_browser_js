@@ -18,9 +18,8 @@ import {
 } from "./consts.ts";
 import { type BrowserContext, chromium, type Page } from "playwright";
 import { pickFirstItem, removeNullRecursively, sleep } from "./utils.ts";
-import type { LooseType } from "@evex/loose-types";
 import type { InitialState, Operation } from "./inject.ts";
-import type { LooseErrorResponse, SuccessResponse, TwitterOpenAPIModelsMapping } from "./twitter-types.ts";
+import type { LooseErrorResponse, LooseType, SuccessResponse, TwitterOpenAPIModelsMapping } from "./twitter-types.ts";
 
 
 /**
