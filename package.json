@@ -8,6 +8,7 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "tsx --test testing/**/*.test.ts",
     "example": "tsx example.ts",
