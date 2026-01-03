@@ -4,11 +4,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/main.d.ts",
+      "import": "./dist/main.js"
     }
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/main.d.ts",
   "scripts": {
     "test": "tsx --test testing/**/*.test.ts",
     "example": "tsx example.ts",
