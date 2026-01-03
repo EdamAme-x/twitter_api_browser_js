@@ -1,4 +1,4 @@
-import { TwitterAPIBrowser } from "./main.ts";
+import { TwitterAPIBrowser } from "./main.js";
 import { createInterface } from "node:readline";
 
 function prompt(question: string): Promise<string> {

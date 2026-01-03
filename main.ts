@@ -8,16 +8,16 @@ import {
   INITIAL_STATE_SCRIPT,
   OPERATIONS_SCRIPT,
   SETUP_SCRIPT,
-} from "./inject.ts";
+} from "./inject.js";
 import {
   DEFAULT_USER_DATA_DIR,
   INITIAL_STATE_GLOBAL_KEY,
   METHOD_MAP,
   OPERATIONS_GLOBAL_KEY,
   REQUEST_FUNC_GLOBAL_KEY,
-} from "./consts.ts";
+} from "./consts.js";
 import { type BrowserContext, chromium, type Page } from "playwright";
-import { pickFirstItem, removeNullRecursively, sleep } from "./utils.ts";
+import { pickFirstItem, removeNullRecursively, sleep } from "./utils.js";
 import type { InitialState, Operation } from "./inject.ts";
 import type { LooseErrorResponse, LooseType, SuccessResponse, TwitterOpenAPIModelsMapping } from "./twitter-types.ts";
 

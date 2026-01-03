@@ -3,8 +3,7 @@
     "target": "ES2024",
     "module": "ESNext",
     "lib": ["ES2024", "DOM"],
-    "moduleResolution": "bundler",
-    "noEmit": true,
+    "noEmit": false,
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
@@ -12,7 +11,12 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true
-  }
+    "outDir": "./dist",
+    "rootDir": "./",
+    "declaration": true,
+     "moduleResolution": "Bundler"
+  },
+  "include": ["./*.ts"],
+  "exclude": ["node_modules", "dist", "testing", "example.ts"]
 }
 

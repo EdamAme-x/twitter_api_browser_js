@@ -4,8 +4,8 @@ import {
   METHOD_MAP,
   OPERATIONS_GLOBAL_KEY,
   REQUEST_FUNC_GLOBAL_KEY,
-} from "./consts.ts";
-import { LooseType } from "./twitter-types.ts";
+} from "./consts.js";
+import { LooseType } from "./twitter-types.js";
 
 export const SETUP_SCRIPT = `
 (async () => {
