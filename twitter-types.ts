@@ -1,5 +1,6 @@
-import type { LooseType } from "@evex/loose-types";
 import type * as TwitterOpenAPIModels from "twitter-openapi-typescript-generated/dist/models/index.d.ts";
+
+export type LooseType = any;
 
 export type TwitterOpenAPIModelsMapping = {
     "CreateTweet": TwitterOpenAPIModels.CreateTweet,

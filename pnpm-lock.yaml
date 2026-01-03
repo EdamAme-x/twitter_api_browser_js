@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@evex/loose-types':
-        specifier: npm:@jsr/evex__loose-types@^1.0.1
-        version: '@jsr/evex__loose-types@1.0.1'
       playwright:
         specifier: npm:patchright@^1.57.0
         version: patchright@1.57.0
@@ -186,9 +183,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@jsr/evex__loose-types@1.0.1':
-    resolution: {integrity: sha512-ENNSHt+xHtkMJj+wp4dGWpLVY3J/BPSfXOo2u6ObFCuLN/hL71HUNQ/xB32jiqQj+u8nqWlGuenH1toFLDYM6Q==, tarball: https://npm.jsr.io/~/11/@jsr/evex__loose-types/1.0.1.tgz}
-
   '@types/node@20.19.27':
     resolution: {integrity: sha512-N2clP5pJhB2YnZJ3PIHFk5RkygRX5WO/5f0WC08tp0wd+sv0rsJk3MqWn3CbNmT2J505a5336jaQj4ph1AdMug==}
 
@@ -318,8 +312,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.2':
     optional: true
-
-  '@jsr/evex__loose-types@1.0.1': {}
 
   '@types/node@20.19.27':
     dependencies:

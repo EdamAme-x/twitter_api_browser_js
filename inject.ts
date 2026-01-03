@@ -1,4 +1,3 @@
-import { LooseType } from "@evex/loose-types";
 import {
   INITIAL_STATE_GLOBAL_KEY,
   INITIAL_STATE_PROP_KEY,
@@ -6,6 +5,7 @@ import {
   OPERATIONS_GLOBAL_KEY,
   REQUEST_FUNC_GLOBAL_KEY,
 } from "./consts.ts";
+import { LooseType } from "./twitter-types.ts";
 
 export const SETUP_SCRIPT = `
 (async () => {
