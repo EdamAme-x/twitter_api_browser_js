@@ -105,8 +105,12 @@ async function main(): Promise<void> {
           console.log(`Unknown operation: ${operation}`);
         }
       };
-      const res = await request();
-      formatLog(res);
+      try {
+        const res = await request();
+        formatLog(res);
+      } catch (e) {
+        console.error(e);
+      }
     }
   } finally {
     await browser.close();

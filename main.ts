@@ -90,12 +90,12 @@ export class TwitterAPIBrowser {
 
     this.browser = raceResult;
 
-    this.page = await this.browser!.newPage();
+    this.page = await this.browser.newPage();
 
     await this.page.addInitScript(SETUP_SCRIPT);
     await this.page.addInitScript(OPERATIONS_SCRIPT);
     await this.page.addInitScript(INITIAL_STATE_SCRIPT);
-    await this.page.goto("https://x.com/home");
+    await this.page.goto("https://x.com/login");
     await sleep(waitForReady * 1000);
     this.operations = await this.page.evaluate(
       `globalThis.${OPERATIONS_GLOBAL_KEY}`
@@ -199,23 +199,27 @@ export class TwitterAPIBrowser {
     await this.page.evaluate(SETUP_SCRIPT);
 
     await sleep(500);
-    const response = [
-      await this.page.evaluate(
-        `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
-          removeNullRecursively(args)
-        )})`
-      ),
-    ].flat();
+    try {
+      const response = [
+        await this.page.evaluate(
+          `globalThis.${REQUEST_FUNC_GLOBAL_KEY}(${JSON.stringify(
+            removeNullRecursively(args)
+          )})`
+        ),
+      ].flat();
 
-    const result = pickFirstItem(response, "response");
+      const result = pickFirstItem(response, "response");
 
-    if (result instanceof Error) {
-      console.log(`!!! Please report this error to the developer !!!`);
-      throw result;
+      if (result instanceof Error) {
+        console.log(`!!! Please report this error to the developer !!!`);
+        throw result;
+      }
+
+      // TODO: more strict type check
+      return result;
+    } catch (e) {
+      throw e;
     }
-
-    // TODO: more strict type check
-    return result;
   }
 
   /**
@@ -229,7 +233,7 @@ export class TwitterAPIBrowser {
     operationName: T,
     variables: LooseType,
     fieldToggles: Record<string, boolean> = {},
-    features: Record<string, LooseType> = {}
+    features: Record<string, LooseType> | null = null
   ): Promise<SuccessResponse<T> | LooseErrorResponse> {
     if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");

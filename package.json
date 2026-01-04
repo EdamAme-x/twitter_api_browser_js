@@ -16,7 +16,7 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "playwright": "npm:patchright@^1.57.0",
+    "playwright": "^1.57.0",
     "twitter-openapi-typescript-generated": "^0.0.38"
   },
   "devDependencies": {
