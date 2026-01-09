@@ -16,6 +16,6 @@ export type SuccessResponse<T extends string> = TwitterOpenAPIModelsMapping[T];
 
 // TODO
 export type LooseErrorResponse = {
-    erros: TwitterOpenAPIModels.ErrorResponse[],
+    errors: TwitterOpenAPIModels.ErrorResponse[],
     data: {}
 } & Record<string, LooseType>;
