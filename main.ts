@@ -53,7 +53,8 @@ export class TwitterAPIBrowser {
    */
   public async setup(
     waitForReady: number = 5,
-    headless: boolean = false
+    headless: boolean = false,
+    proxy: string | undefined = void 0
   ): Promise<void> {
     if (this.browser && this.page) {
       await this.close();
@@ -74,6 +75,7 @@ export class TwitterAPIBrowser {
           "--no-sandbox",
           "--disable-dev-shm-usage",
           "--disable-gpu",
+          proxy ? `--proxy-server=${proxy}` : "",
         ],
       })
       .then(resolve)
