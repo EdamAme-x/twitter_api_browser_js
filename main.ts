@@ -163,7 +163,7 @@ export class TwitterAPIBrowser {
     method: string,
     path: string,
     body: LooseType
-  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
+  ): Promise<LooseType> {
     if (!this.page) {
       throw new Error("Maybe you forgot to call setup()?");
     }
@@ -236,7 +236,10 @@ export class TwitterAPIBrowser {
     variables: LooseType,
     fieldToggles: Record<string, boolean> = {},
     features: Record<string, LooseType> | null = null
-  ): Promise<SuccessResponse<T> | LooseErrorResponse> {
+  ): Promise<{
+    success: boolean;
+    response: SuccessResponse<T> | LooseErrorResponse;
+  }> {
     if (!this.page || !this.operations || !this.initialState) {
       throw new Error("Maybe you forgot to call setup()?");
     }
@@ -305,10 +308,22 @@ export class TwitterAPIBrowser {
       }
     });
 
-    return await this.graphql(
+    const response = await this.graphql(
       method,
       `/graphql/${queryId}/${operationName}`,
       body
     );
+
+    if (response.errors) {
+      return {
+        success: false,
+        response: response as LooseErrorResponse,
+      };
+    }
+
+    return {
+      success: true,
+      response: response as SuccessResponse<T>,
+    };
   }
 }
